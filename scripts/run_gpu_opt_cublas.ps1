@@ -1,5 +1,5 @@
 # ==========================================
-# run_gpu_opt.ps1
+# run_gpu_opt_cublas.ps1
 # Compile + run GPU matmul (naive/tiled/cuBLAS) and save results
 # (robust to nvcc warnings on stderr)
 # ==========================================

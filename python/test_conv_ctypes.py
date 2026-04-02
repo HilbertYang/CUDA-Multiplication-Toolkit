@@ -54,8 +54,17 @@ def run_one(img_u32: np.ndarray, filt: np.ndarray, name: str):
 
     cpu_s = t1 - t0
     gpu_s = t3 - t2
+    same = np.array_equal(out_cpu, out_gpu)
+    max_abs_diff = int(np.max(np.abs(out_cpu.astype(np.int64) - out_gpu.astype(np.int64))))
 
-    print(f"[{name}] M={M}, N={N}  CPU={cpu_s:.4f}s  GPU={gpu_s:.4f}s  speedup={cpu_s/gpu_s if gpu_s>0 else 0:.2f}x")
+    print(
+        f"[{name}] M={M}, N={N}  CPU={cpu_s:.4f}s  GPU={gpu_s:.4f}s  "
+        f"speedup={cpu_s/gpu_s if gpu_s>0 else 0:.2f}x  "
+        f"match={'PASS' if same else 'FAIL'}  max_diff={max_abs_diff}"
+    )
+    if not same:
+        raise RuntimeError(f"CPU/GPU convolution mismatch for {name}: max_diff={max_abs_diff}")
+
     return out_cpu.reshape(M, M), out_gpu.reshape(M, M), cpu_s, gpu_s
 
 
